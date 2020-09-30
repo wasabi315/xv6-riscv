@@ -1,0 +1,11 @@
+{
+  "image": "wtakuo/xv6-env",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/xv6/xv6-riscv,type=bind,consistency=delegated",
+  "workspaceFolder": "/home/xv6/xv6-riscv",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "extensions": [
+    "ms-vscode.cpptools"
+  ]
+}
