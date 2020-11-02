@@ -6,24 +6,6 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-void writeNumber(unsigned char n) {
-    int n1 = n / 100;
-    int n2 = (n % 100) / 10;
-    int n3 = n % 10;
-
-    if (n1 != 0) {
-        char c1[1] = {n1 + '0'};
-        write(1, c1, 1);
-    }
-    if (n2 != 0) {
-        char c2[1] = {n2 + '0'};
-        write(1, c2, 1);
-    }
-    char c3[1] = {n3 + '0'};
-    write(1, c3, 1);
-    return;
-}
-
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         fprintf(1, "usage: %s N\n", argv[0]);
@@ -43,11 +25,6 @@ int main(int argc, char *argv[]) {
         unsigned char cnt;
         for (int i = 0; i < n; i++) {
             read(p[0], &cnt, 1);
-
-            write(1, "Child read: ", 12);
-            writeNumber(cnt);
-            write(1, "\n", 1);
-
             cnt++;
             write(p[1], &cnt, 1);
         }
@@ -60,11 +37,6 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < n; i++) {
             write(p[1], &cnt, 1);
             read(p[0], &cnt, 1);
-
-            write(1, "Parent read: ", 13);
-            writeNumber(cnt);
-            write(1, "\n", 1);
-
             cnt++;
         }
 
