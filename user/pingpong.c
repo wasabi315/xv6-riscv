@@ -6,6 +6,29 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
+int fork_or_exit(void) {
+    int pid = fork();
+    if (pid == -1) {
+        fprintf(1, "error: fork\n");
+        exit(1);
+    }
+    return pid;
+}
+
+void read_or_exit(int fd, void *buf, int n) {
+    if (read(fd, buf, n) == -1) {
+        fprintf(1, "error: read\n");
+        exit(1);
+    }
+}
+
+void write_or_exit(int fd, void *buf, int n) {
+    if (write(fd, buf, n) == -1) {
+        fprintf(1, "error: write\n");
+        exit(1);
+    }
+}
+
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         fprintf(1, "usage: %s N\n", argv[0]);
@@ -20,13 +43,13 @@ int main(int argc, char *argv[]) {
 
     int p[2];
     pipe(p);
-    int pid = fork();
+    int pid = fork_or_exit();
     if (pid == 0) { /* child */
         unsigned char cnt;
         for (int i = 0; i < n; i++) {
-            read(p[0], &cnt, 1);
+            read_or_exit(p[0], &cnt, 1);
             cnt++;
-            write(p[1], &cnt, 1);
+            write_or_exit(p[1], &cnt, 1);
         }
 
         close(p[0]);
@@ -35,8 +58,8 @@ int main(int argc, char *argv[]) {
     } else { /* parent */
         unsigned char cnt = 0;
         for (int i = 0; i < n; i++) {
-            write(p[1], &cnt, 1);
-            read(p[0], &cnt, 1);
+            write_or_exit(p[1], &cnt, 1);
+            read_or_exit(p[0], &cnt, 1);
             cnt++;
         }
 
