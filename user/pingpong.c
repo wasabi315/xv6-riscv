@@ -41,30 +41,37 @@ int main(int argc, char *argv[]) {
     // tick value before starting rounds
     int start_tick = uptime();
 
-    int p[2];
-    pipe(p);
+    int p2c[2], c2p[2];
+    pipe(p2c);
+    pipe(c2p);
     int pid = fork_or_exit();
     if (pid == 0) { /* child */
+        close(p2c[1]);
+        close(c2p[0]);
+
         unsigned char cnt;
         for (int i = 0; i < n; i++) {
-            read_or_exit(p[0], &cnt, 1);
+            read_or_exit(p2c[0], &cnt, 1);
             cnt++;
-            write_or_exit(p[1], &cnt, 1);
+            write_or_exit(c2p[1], &cnt, 1);
         }
 
-        close(p[0]);
-        close(p[1]);
+        close(p2c[0]);
+        close(c2p[1]);
         exit(0);
     } else { /* parent */
+        close(p2c[0]);
+        close(c2p[1]);
+
         unsigned char cnt = 0;
         for (int i = 0; i < n; i++) {
-            write_or_exit(p[1], &cnt, 1);
-            read_or_exit(p[0], &cnt, 1);
+            write_or_exit(p2c[1], &cnt, 1);
+            read_or_exit(c2p[0], &cnt, 1);
             cnt++;
         }
 
-        close(p[0]);
-        close(p[1]);
+        close(p2c[1]);
+        close(c2p[0]);
         wait(0);
     }
 
