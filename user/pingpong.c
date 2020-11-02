@@ -1,6 +1,6 @@
 // pingpong.c for xv6 (assignment #1 for CSC.T371)
-// name: <<<your name>>>
-// id: <<<your student id>>>
+// name: Satoshi Takimoto
+// id: 18B08951
 
 #include "kernel/types.h"
 #include "kernel/stat.h"
